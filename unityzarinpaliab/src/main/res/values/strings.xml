@@ -9,4 +9,14 @@
     <string name="titleText">بسته طلای 5</string>
     <string name="cancelButtonText">انصراف</string>
     <string name="priceText">%1$s تومان</string>
+    <string name="email_text">ایمیل</string>
+    <string name="phone_text">موبایل</string>
+    <string name="purchase_success">خرید با موفقیت انجام شد.در حال بازگشت به بازی
+    اگر این صفحه بسته نشد ، دکمه بازشگت به بازی را لمس کنید</string>
+    <string name="button_return">بازشگت به بازی</string>
+    <string name="purchase_failed">خرید ناموفق بود.در حال بازگشت به بازی... اگر این صفحه بسته نشد ، دکمه بازشگت به بازی را لمس کنید.</string>
+    <string name="progressTitle">در حال اتصال</string>
+    <string name="progressDesc">در حال اتصال به زرین پال.لطفا منتظر بمانید...</string>
+    <string name="verifyTitle">در حال بررسی</string>
+    <string name="verifyDesc">در حال بررسی تراکنش.لطفا منتظر بمانید ...</string>
 </resources>
