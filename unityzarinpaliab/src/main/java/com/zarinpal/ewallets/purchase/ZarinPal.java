@@ -44,7 +44,7 @@ public class ZarinPal {
             return;
         }
         boolean isSuccess = uri.getQueryParameter("Status").equals("OK");
-        String authority = uri.getQueryParameter(Payment.AUTHORITY_PARAMS);
+        String authority = uri.getQueryParameter("Authority");
         if (!authority.equals(this.paymentRequest.getAuthority())) {
             listener.onCallbackResultVerificationPayment(false, null, this.paymentRequest);
         } else if (isSuccess) {
@@ -56,7 +56,15 @@ public class ZarinPal {
                 new HttpRequest(this.context, this.paymentRequest.getVerificationPaymentURL()).setJson(verificationPayment.getVerificationPaymentAsJson()).setRequestMethod(1).setRequestType((byte) 0).get(new HttpRequestListener() {
                     public void onSuccessResponse(JSONObject jsonObject, String contentResponse) {
                         try {
-                            listener.onCallbackResultVerificationPayment(true, jsonObject.getString("RefID"), ZarinPal.this.paymentRequest);
+                            JSONObject error = jsonObject.optJSONObject("errors");
+                            if(error!=null){
+                                listener.onCallbackResultVerificationPayment(false, null, ZarinPal.this.paymentRequest);
+                            }
+                            else{
+                                JSONObject data = jsonObject.getJSONObject("data");
+                                listener.onCallbackResultVerificationPayment(true, data.getString("ref_id"), ZarinPal.this.paymentRequest);
+                            }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -77,14 +85,26 @@ public class ZarinPal {
     public void startPayment(final PaymentRequest paymentRequest, final OnCallbackRequestPaymentListener listener) {
         this.paymentRequest = paymentRequest;
         try {
+            Log.d("Zarinpal", "startPayment: here");
             new HttpRequest(this.context, paymentRequest.getPaymentRequestURL()).setRequestType((byte) 0).setRequestMethod(1).setJson(paymentRequest.getPaymentRequestAsJson()).get(new HttpRequestListener() {
                 public void onSuccessResponse(JSONObject jsonObject, String contentResponse) {
                     try {
-                        int status = jsonObject.getInt("Status");
-                        String authority = jsonObject.getString(Payment.AUTHORITY_PARAMS);
-                        paymentRequest.setAuthority(authority);
-                        Uri uri = Uri.parse(paymentRequest.getStartPaymentGatewayURL(authority));
-                        listener.onCallbackResultPaymentRequest(status, authority, uri, new Intent("android.intent.action.VIEW", uri));
+                        Log.d("Zarinpal", "jsonContent:"+jsonObject.toString());
+                        JSONObject error = jsonObject.optJSONObject("errors");
+                        if(error!=null){
+                            listener.onCallbackResultPaymentRequest(error.getInt("code"), null, null, null);
+                            return;
+                        }
+                        else
+                        {
+                            JSONObject data = jsonObject.getJSONObject("data");
+                            int status = data.getInt("code");
+                            String authority = data.getString(Payment.AUTHORITY_PARAMS);
+                            paymentRequest.setAuthority(authority);
+                            Uri uri = Uri.parse(paymentRequest.getStartPaymentGatewayURL(authority));
+                            listener.onCallbackResultPaymentRequest(status, authority, uri, new Intent("android.intent.action.VIEW", uri));
+                        }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

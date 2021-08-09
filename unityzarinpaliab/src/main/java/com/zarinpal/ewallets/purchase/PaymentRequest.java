@@ -1,12 +1,17 @@
 package com.zarinpal.ewallets.purchase;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PaymentRequest {
-    protected static final String PAYMENT_GATEWAY_URL = "https://www.%szarinpal.com/pg/StartPay/%s/ZarinGate";
-    protected static final String PAYMENT_REQUEST_URL = "https://www.%szarinpal.com/pg/rest/WebGate/PaymentRequest.json";
-    protected static final String VERIFICATION_PAYMENT_URL = "https://www.%szarinpal.com/pg/rest/WebGate/PaymentVerification.json";
+    //protected static final String PAYMENT_GATEWAY_URL = "https://www.%szarinpal.com/pg/StartPay/%s/ZarinGate";
+    protected static final String PAYMENT_GATEWAY_URL = "https://www.zarinpal.com/pg/StartPay/%s";
+    //protected static final String PAYMENT_REQUEST_URL = "https://www.%szarinpal.com/pg/rest/WebGate/PaymentRequest.json";
+    protected static final String PAYMENT_REQUEST_URL = "https://api.zarinpal.com/pg/v4/payment/request.json";
+    //protected static final String VERIFICATION_PAYMENT_URL = "https://www.%szarinpal.com/pg/rest/WebGate/PaymentVerification.json";
+    protected static final String VERIFICATION_PAYMENT_URL = "https://api.zarinpal.com/pg/v4/payment/verify.json";
     private long amount;
     private String authority;
     private String callBackURL;
@@ -77,13 +82,15 @@ public class PaymentRequest {
         jsonObject.put(Payment.AMOUNT_PARAMS, getAmount());
         jsonObject.put(Payment.DESCRIPTION_PARAMS, getDescription());
         jsonObject.put(Payment.CALLBACK_URL_PARAMS, getCallBackURL());
-        jsonObject.put(Payment.MOBILE_PARAMS, getMobile());
-        jsonObject.put(Payment.EMAIL_PARAMS, getEmail());
+        JSONObject metadata = new JSONObject();
+        metadata.put(Payment.MOBILE_PARAMS, getMobile());
+        metadata.put(Payment.EMAIL_PARAMS, getEmail());
+        jsonObject.put(Payment.META_DATA,metadata);
         return jsonObject;
     }
 
     public String getStartPaymentGatewayURL(String authority) {
-        return String.format(PAYMENT_GATEWAY_URL, new Object[]{BuildConfig.FLAVOR, authority});
+        return String.format(PAYMENT_GATEWAY_URL, new Object[]{authority});
     }
 
     public String getPaymentRequestURL() {

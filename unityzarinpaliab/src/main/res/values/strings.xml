@@ -8,7 +8,7 @@
     </string>
     <string name="titleText">بسته طلای 5</string>
     <string name="cancelButtonText">انصراف</string>
-    <string name="priceText">%1$s تومان</string>
+    <string name="priceText">%1$s ریال</string>
     <string name="email_text">ایمیل</string>
     <string name="phone_text">موبایل</string>
     <string name="purchase_success">خرید با موفقیت انجام شد.در حال بازگشت به بازی
