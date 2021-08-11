@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/UnityZarinpalPurchase.iml" filepath="$PROJECT_DIR$/UnityZarinpalPurchase.iml" />
-      <module fileurl="file://$PROJECT_DIR$/unity_classes/unity_classes.iml" filepath="$PROJECT_DIR$/unity_classes/unity_classes.iml" />
-      <module fileurl="file://$PROJECT_DIR$/unityzarinpaliab/unityzarinpaliab.iml" filepath="$PROJECT_DIR$/unityzarinpaliab/unityzarinpaliab.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AndroidPluginSource.iml" filepath="$PROJECT_DIR$/.idea/modules/AndroidPluginSource.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/unity_classes/AndroidPluginSource.unity_classes.iml" filepath="$PROJECT_DIR$/.idea/modules/unity_classes/AndroidPluginSource.unity_classes.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/unityzarinpaliab/AndroidPluginSource.unityzarinpaliab.iml" filepath="$PROJECT_DIR$/.idea/modules/unityzarinpaliab/AndroidPluginSource.unityzarinpaliab.iml" />
     </modules>
   </component>
 </project>

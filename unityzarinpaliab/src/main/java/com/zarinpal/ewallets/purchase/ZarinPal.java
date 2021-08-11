@@ -92,7 +92,7 @@ public class ZarinPal {
                         Log.d("Zarinpal", "jsonContent:"+jsonObject.toString());
                         JSONObject error = jsonObject.optJSONObject("errors");
                         if(error!=null){
-                            listener.onCallbackResultPaymentRequest(error.getInt("code"), null, null, null);
+                            listener.onCallbackResultPaymentRequest(error.getInt("code"), null, null, null, error.getString("message"));
                             return;
                         }
                         else
@@ -102,19 +102,28 @@ public class ZarinPal {
                             String authority = data.getString(Payment.AUTHORITY_PARAMS);
                             paymentRequest.setAuthority(authority);
                             Uri uri = Uri.parse(paymentRequest.getStartPaymentGatewayURL(authority));
-                            listener.onCallbackResultPaymentRequest(status, authority, uri, new Intent("android.intent.action.VIEW", uri));
+                            listener.onCallbackResultPaymentRequest(status, authority, uri, new Intent("android.intent.action.VIEW", uri), null);
                         }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        listener.onCallbackResultPaymentRequest(400, null, null, null, "response is not json");
                     }
                 }
 
                 public void onFailureResponse(int httpStatusCode, String dataError) {
                     try {
-                        listener.onCallbackResultPaymentRequest(new JSONObject(dataError).getInt("Status"), null, null, null);
+                        JSONObject jsonObject = new JSONObject(dataError);
+                        JSONObject error = jsonObject.optJSONObject("errors");
+                        if(error!=null){
+                            listener.onCallbackResultPaymentRequest(error.getInt("code"), null, null, null, error.getString("message"));
+                        }
+                        else{
+                            listener.onCallbackResultPaymentRequest(httpStatusCode, null, null, null, "http failed, " + dataError);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        listener.onCallbackResultPaymentRequest(httpStatusCode, null, null, null, "failed an http request");
                     }
                 }
             });

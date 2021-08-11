@@ -4,5 +4,5 @@ import android.content.Intent;
 import android.net.Uri;
 
 public interface OnCallbackRequestPaymentListener {
-    void onCallbackResultPaymentRequest(int i, String str, Uri uri, Intent intent);
+    void onCallbackResultPaymentRequest(int i, String str, Uri uri, Intent intent, String error);
 }

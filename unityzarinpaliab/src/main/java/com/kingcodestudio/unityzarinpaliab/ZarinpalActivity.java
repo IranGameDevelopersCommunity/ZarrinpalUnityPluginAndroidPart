@@ -202,7 +202,41 @@ public class ZarinpalActivity extends Activity {
         UnityPlayer.currentActivity.startActivity(intent);
     }
 
+    public static void startPurchaseFlowWithoutPanel(long amount, String description, String emailText, String mobileText){
+        m_purchaseIntent = null;
+        ZarinPal purchase = ZarinPal.getPurchase(UnityPlayer.currentActivity);
+        PaymentRequest payment = ZarinPal.getPaymentRequest();
+        payment.setMerchantID(m_merchantID);
+        payment.setAmount(amount);
+        payment.setDescription(description);
+        payment.setCallbackURL(m_callbackScheme);
+        if(!TextUtils.isEmpty(emailText)){
+            payment.setEmail(emailText);
+        }
+        if(!TextUtils.isEmpty(mobileText)){
+            payment.setMobile(mobileText);
+        }
+        Log.d("Zarinpal","Creating purchase object with callback : "+m_callbackScheme);
 
+        purchase.startPayment(payment, new OnCallbackRequestPaymentListener() {
+            @Override
+            public void onCallbackResultPaymentRequest(int status, String authority, Uri paymentGatewayUri, Intent intent, String error) {
+                if(status==100){
+                    Log.d("Zarinpal","Payment started");
+                    UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME,"OnPurchaseStarted",authority);
+                    if(m_autoStartPurchase){
+                        UnityPlayer.currentActivity.startActivity(intent);
+                    }
+                    m_purchaseIntent = intent;
+                }
+                else
+                {
+                    Log.d("Zarinpal","Payment failed to start");
+                    UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME,"OnPurchaseFailedToStart",error);
+                }
+            }
+        });
+    }
 
     private void purchase(long amount, String description){
         m_purchaseIntent = null;
@@ -225,7 +259,7 @@ public class ZarinpalActivity extends Activity {
         showProgress();
         purchase.startPayment(payment, new OnCallbackRequestPaymentListener() {
             @Override
-            public void onCallbackResultPaymentRequest(int status, String authority, Uri paymentGatewayUri, Intent intent) {
+            public void onCallbackResultPaymentRequest(int status, String authority, Uri paymentGatewayUri, Intent intent, String error) {
                 if(status==100){
                     Log.d("Zarinpal","Payment started");
                     UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME,"OnPurchaseStarted",authority);
@@ -237,7 +271,7 @@ public class ZarinpalActivity extends Activity {
                 else
                 {
                     Log.d("Zarinpal","Payment failed to start");
-                    UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME,"OnPurchaseFailedToStart","error on payment request");
+                    UnityPlayer.UnitySendMessage(UNITY_GAME_OBJECT_NAME,"OnPurchaseFailedToStart",error);
                 }
                 dismissProgress();
                 finish();
